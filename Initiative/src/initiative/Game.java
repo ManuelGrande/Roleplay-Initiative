@@ -4,24 +4,26 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Random;
+import java.util.Collections;
+import java.util.Comparator;
 
 /*
-    1-chusmear scanner si hay que resetearlo
-    2-que solo se pueda insertar Y/N con un try catch i guess
- */
+    chusmear cuando inserto otro que no sea y/n para que no te mande al principio
+
+
+*/
+
 public class Game implements Actions {
 
     public Game() {
     }
-
-    @Override
-    public ArrayList<Character> SetNewPlayers() {
-
+    
+    public ArrayList<Character> SetPlayersHuman(){
+        
         ArrayList<Character> Players = new ArrayList<Character>();
         Scanner sc = new Scanner(System.in);
         int PlayersHuman = 0;
-        int Modifier = 0;
-        int PlayersNpc = 0;
+        int Modifier = 0; 
         char ControlModifier = 'x';
         boolean Ready = false;
 
@@ -33,7 +35,8 @@ public class Game implements Actions {
                     System.out.println("\nPlease determine the number of players (human):");
                     PlayersHuman = sc.nextInt();
                 }
-
+               
+                /*
                 if (ControlModifier == 'x') {
                     System.out.println("\nDo they have initiative modifiers? Y/N");
                     ControlModifier = sc.next().charAt(0);
@@ -42,31 +45,118 @@ public class Game implements Actions {
                         throw new YesOrNoAnswerException();
                     } 
                     else if (ControlModifier == 'y') {
-                        System.out.println("\ninserto y");
+                        
+                        System.out.println("\nWhat is the value of the initiative modifier?:");
+                        Modifier = sc.nextInt();
                     } 
-                    else {
-                        System.out.println("\ninserto n");
-                    }
                 }
+                */
                 
                 System.out.println("\nPlease provide the information of every character.");
                 for(int i = 0 ; i < PlayersHuman ; i++){
-                    sc.nextLine();
+                    
+                    System.out.println("\nPlayer nº:"+i+"/"+PlayersHuman);
+                    
                     Character c = new Character();
                     System.out.println("\nNew character´s name: ");
                     c.setName(sc.next());
-                    System.out.println("\nNew character´s initiative modifier");
-                    
-                    
-                    
-                }
-                
-                
-                
+                               
+                    System.out.println("\nDoes "+c.getName()+" have initiative modifiers? Y/N");
+                    ControlModifier = sc.next().charAt(0);
 
+                    if (ControlModifier != 'y' && ControlModifier != 'n') {
+                        throw new YesOrNoAnswerException();
+                    } 
+                    else if (ControlModifier == 'y') {
+                        
+                        System.out.println("\nWhat is the value of the initiative modifier?:");
+                        c.setModifier(sc.nextInt());    
+                    } 
+                    
+                    Players.add(c);
+                    sc.nextLine();                           
+                    
+                }              
+                    Ready = true;
             } 
             catch (InputMismatchException e) {
                 System.out.println("\nError: The values inserted are not the"
+                        + " values expected, please try again.");
+                sc.nextLine();
+            } 
+            catch (YesOrNoAnswerException e) {
+                System.out.println("\nError: Please insert only Y or N.");
+                ControlModifier = 'x';
+                sc.nextLine();
+            }         
+        }
+        
+        
+        return Players;
+        
+
+    }
+        
+    public ArrayList<Character> SetPlayersNpc(){
+        
+        
+        ArrayList<Character> Npcs = new ArrayList<Character>();
+        Scanner sc = new Scanner(System.in);
+        int PlayersNpc = 0;
+        int Modifier = 0; 
+        
+        char ControlModifier = 'x';
+        boolean Ready = false;
+
+        while (Ready == false) {
+
+            try {
+
+                if (PlayersNpc == 0) {
+                    System.out.println("\nPlease determine the number of players (npc):");
+                    PlayersNpc = sc.nextInt();
+                }
+                   /*
+                if (ControlModifier == 'x') {
+                    System.out.println("\nDo they have initiative modifiers? Y/N");
+                    ControlModifier = sc.next().charAt(0);
+
+                    if (ControlModifier != 'y' && ControlModifier != 'n') {
+                        throw new YesOrNoAnswerException();
+                    } 
+                    else if (ControlModifier == 'y') {
+                        
+                        System.out.println("\nWhat is the value of the initiative modifier?:");
+                        Modifier = sc.nextInt();
+                    } 
+                }
+                */
+                
+                for(int i = 0 ; i < PlayersNpc ; i++){
+                    Character c = new Character();
+                    
+                    c.setName(i+"º-npc");
+                                       
+                    System.out.println("\nDoes "+c.getName()+" have initiative modifiers? Y/N");
+                    ControlModifier = sc.next().charAt(0);
+
+                    if (ControlModifier != 'y' && ControlModifier != 'n') {
+                        throw new YesOrNoAnswerException();
+                    } 
+                    else if (ControlModifier == 'y') {
+                        
+                        System.out.println("\nWhat is the value of the initiative modifier?:");
+                        c.setModifier(sc.nextInt()); 
+                    } 
+                    
+                    Npcs.add(c);
+                                          
+                    
+                }              
+                    Ready = true;
+            } 
+            catch (InputMismatchException e) {
+                System.out.println("\nError: The values inserted are not the "
                         + "values expected, please try again.");
                 sc.nextLine();
             } 
@@ -75,22 +165,77 @@ public class Game implements Actions {
                 ControlModifier = 'x';
                 sc.nextLine();
             }
-
+            
+            
+            
         }
 
-        return Players;
-
+        return Npcs;
+        
     }
 
-}
-/*
-    @Override
-    public ArrayList<Character> OrderPlayers(ArrayList<Character> Players){
+    //Chusmear si en algún momento queda la position negativa
+    public ArrayList<Character> SetPositionValues(ArrayList<Character> Players){
         
         Random ran = new Random();
         
+        for(Character c : Players){
+            c.setPosition( (int)(ran.nextDouble() * 20 + 1) );
+            
+            if(c.getModifier()!=0){
+                
+                if(c.getPosition()+c.getModifier()>=0){
+                    
+                     c.setPosition(c.getPosition()+c.getModifier());
+                }
+                else{
+                    c.setPosition(1);
+                }
+            }
+        }
+        
+        return Players;
+        
+    }
+        
+    @Override
+    public ArrayList<Character> SetNewPlayers() {
+        
+        ArrayList<Character> AllPlayers = new ArrayList<Character>();
+        
+        AllPlayers.addAll(SetPlayersHuman());
+        AllPlayers.addAll(SetPlayersNpc());
+        
+        AllPlayers = SetPositionValues(AllPlayers);
+        
+        Collections.sort(AllPlayers, new Comparator<Character>(){
+        
+        public int compare(Character c1,Character c2){
+            return Integer.valueOf(c2.getPosition()).compareTo(c1.getPosition());
+        }
+        
+        });
+        
+        
+        return AllPlayers;
+
+}
+    
+    /*
+    public ArrayList<Character> Game(ArrayList<Character> Players){
         
         
         
         
-    }*/
+        
+    }
+    */
+    
+  
+
+    
+}
+        
+        
+        
+    

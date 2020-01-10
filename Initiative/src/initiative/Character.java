@@ -2,6 +2,7 @@
 package initiative;
 
 
+
 public class Character {
     
     private String Name;
@@ -38,7 +39,7 @@ public class Character {
         this.Modifier = Modifier;
     }   
     
-    
+
     public Character(String Name,int Modifier) {
         setName(Name);
         setModifier(Modifier);
