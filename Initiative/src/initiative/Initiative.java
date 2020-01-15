@@ -15,26 +15,31 @@ public class Initiative {
     
     cuando termina un turno preguntar quien murió y si hay nuevos modificadores
     
+    al ordenar jugadores,preguntar antes de ir a la siguiente ronda si algo sucedio
+    y si elige si preguntar si:
+    1)continua al siguiente turno
+    2)murio algun personaje
+    3)revivio algún personaje
+    4)cambio el modificador de algun personaje
+    5)si termina la partida
+    
+    
+    PARA TERMINAR
+    
+    chumear exceptions sin poner
+    listar los muertos a la hora de revivir
+    
+    
+    
+    
     
     */
     public static void main(String[] args) {
         
        
-        
-        
-        System.out.println("Welcome to the ROLEPLAY-INITIATIVE-ENFORCER Deluxe Edition.");
-       
-        ArrayList<Character> CurrentParty = new ArrayList<Character>();
-                
         Game game = new Game();
         
-   
-        
-        for(Character c : game.SetNewPlayers()){
-            System.out.println("\nNombre:"+c.getName()+"\nModificador: "+c.getModifier()+"\nPosición:"+c.getPosition()+"\n");
-            
-        }
-        
+        game.Start();
         
             
             

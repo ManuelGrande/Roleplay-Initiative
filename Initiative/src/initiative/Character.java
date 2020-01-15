@@ -25,6 +25,7 @@ public class Character {
     public int getModifier() {
         return Modifier;
     }
+  
 
     public void setName(String Name) {
         this.Name = Name;
@@ -52,6 +53,7 @@ public class Character {
         setAlive(true);
         setPosition(0);
     }
+    
     
     
     
