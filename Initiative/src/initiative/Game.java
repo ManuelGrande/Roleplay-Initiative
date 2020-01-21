@@ -6,12 +6,13 @@ import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
 
 /*
     chusmear cuando inserto otro que no sea y/n para que no te mande al principio
 
  */
-public class Game implements Actions {
+public class Game {
 
     public Game() {
     }
@@ -34,21 +35,6 @@ public class Game implements Actions {
                     PlayersHuman = sc.nextInt();
                 }
 
-                /*
-                if (ControlModifier == 'x') {
-                    System.out.println("\nDo they have initiative modifiers? Y/N");
-                    ControlModifier = sc.next().charAt(0);
-
-                    if (ControlModifier != 'y' && ControlModifier != 'n') {
-                        throw new YesOrNoAnswerException();
-                    } 
-                    else if (ControlModifier == 'y') {
-                        
-                        System.out.println("\nWhat is the value of the initiative modifier?:");
-                        Modifier = sc.nextInt();
-                    } 
-                }
-                 */
                 System.out.println("\nPlease provide the information of every character.");
                 for (int i = 0; i < PlayersHuman; i++) {
 
@@ -107,21 +93,6 @@ public class Game implements Actions {
                     System.out.println("\nPlease determine the number of players (npc):");
                     PlayersNpc = sc.nextInt();
                 }
-                /*
-                if (ControlModifier == 'x') {
-                    System.out.println("\nDo they have initiative modifiers? Y/N");
-                    ControlModifier = sc.next().charAt(0);
-
-                    if (ControlModifier != 'y' && ControlModifier != 'n') {
-                        throw new YesOrNoAnswerException();
-                    } 
-                    else if (ControlModifier == 'y') {
-                        
-                        System.out.println("\nWhat is the value of the initiative modifier?:");
-                        Modifier = sc.nextInt();
-                    } 
-                }
-                 */
 
                 for (int i = 0; i < PlayersNpc; i++) {
                     Character c = new Character();
@@ -181,7 +152,7 @@ public class Game implements Actions {
 
     }
 
-    @Override
+    
     public ArrayList<Character> SetNewPlayers() {
 
         ArrayList<Character> AllPlayers = new ArrayList<Character>();
@@ -232,9 +203,21 @@ public class Game implements Actions {
 
     private void SetNewModifier(Character c) {
 
+        boolean ok = false;
         Scanner sc = new Scanner(System.in);
+
         System.out.println("\nPlease insert the new value of " + c.getName() + "´s modifier:");
-        c.setModifier(sc.nextInt());
+        while (ok == false) {
+
+            try {
+                c.setModifier(sc.nextInt());
+                ok = true;
+            } catch (InputMismatchException e) {
+                System.out.println("\nError:the values inserted are not correct,please try again:");
+                sc.next();
+
+            }
+        }
 
     }
 
@@ -278,6 +261,7 @@ public class Game implements Actions {
 
     public void Start() {
         Scanner sc = new Scanner(System.in);
+        
         int Round = 0;
         boolean endGame = false;
         int Choice = -1;
@@ -285,61 +269,66 @@ public class Game implements Actions {
         ArrayList<Character> Players = SetNewPlayers();
 
         while (endGame == false) {
-
+            
             System.out.println("\nRound nº" + Round + ".");
 
             NewRound(Players);
 
-            while (Choice != 1) {
+            while (Choice != 1 && Choice != 5) {
+                try {
+                    System.out.println("\nPlease select an option to continue:");
+                    System.out.println("\nInsert 1 to continue to the next round.");
+                    System.out.println("\nInsert 2 if a player died.");
+                    System.out.println("\nInsert 3 if a player was resurrected.");
+                    System.out.println("\nInsert 4 to change a modifier of a player.");
+                    System.out.println("\nInsert 5 to end the game.");
+                    Choice = sc.nextInt();
+                    sc.nextLine();
 
-                System.out.println("\nPlease select an option to continue:");
-                System.out.println("\nInsert 1 to continue to the next round.");
-                System.out.println("\nInsert 2 if a player died.");
-                System.out.println("\nInsert 3 if a player was resurrected.");
-                System.out.println("\nInsert 4 to change a modifier of a player.");
-                System.out.println("\nInsert 5 to end the game.");
-                Choice = sc.nextInt();
-                sc.nextLine();
+                    switch (Choice) {
 
-                switch (Choice) {
-
-                    case 1:
-                        Round++;
-                        System.out.println("\nStarting a new round...");
-                        System.out.println("\nPress Any Key To Continue...");
-                        sc.nextLine();
-                        break;
-                    case 2:
-                        Players.get(GetIndexFromName(Players)).setAlive(false);
-                        System.out.println("\nPlayer set dead successfuly!");
-                        System.out.println("\nPress Any Key To Continue...");
-                        sc.nextLine();
-                        break;
-                    case 3:
-                        ShowDeadPlayers(Players);
-                        Players.get(GetIndexFromName(Players)).setAlive(true);
-                        System.out.println("\nPlayer set alive  successfuly!");
-                        System.out.println("\nPress Any Key To Continue...");
-                        sc.nextLine();
-                        break;
-                    case 4:
-                        SetNewModifier(Players.get(GetIndexFromName(Players)));
-                        System.out.println("\nPlayer´s new modifier set succefully!");
-                        System.out.println("\nPress Any Key To Continue...");
-                        sc.nextLine();
-                        break;
-                    case 5:
-                        endGame = true;
-                        break;
-                    default:
-                        System.out.println("\nError: option inserted is not valid.Press any key to try again...");
-                        sc.nextLine();
+                        case 1:
+                            Round++;
+                            System.out.println("\nStarting a new round...");
+                            System.out.println("\nPress Any Key To Continue...");
+                            sc.nextLine();
+                            break;
+                        case 2:
+                            Players.get(GetIndexFromName(Players)).setAlive(false);
+                            System.out.println("\nPlayer set dead successfuly!");
+                            System.out.println("\nPress Any Key To Continue...");
+                            sc.nextLine();
+                            break;
+                        case 3:
+                            ShowDeadPlayers(Players);
+                            Players.get(GetIndexFromName(Players)).setAlive(true);
+                            System.out.println("\nPlayer set alive  successfuly!");
+                            System.out.println("\nPress Any Key To Continue...");
+                            sc.nextLine();
+                            break;
+                        case 4:
+                            SetNewModifier(Players.get(GetIndexFromName(Players)));
+                            System.out.println("\nPlayer´s new modifier set succefully!");
+                            System.out.println("\nPress Any Key To Continue...");
+                            sc.nextLine();
+                            break;
+                        case 5:
+                            endGame = true;
+                            break;
+                        default:
+                            System.out.println("\nError: option inserted is not valid.Press any key to try again...");
+                            sc.nextLine();
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("\nError:the values inserted are not correct,please try again:");
+                    sc.next();
                 }
+
             }
-
-            Choice = -1;
-
+            Choice=0;
         }
+        
+        System.out.println("\nExiting program.");
 
     }
 

@@ -1,0 +1,14 @@
+The program is simple: In a first stage you enter the number of the players,
+
+their names and the individual initiative-modifier for each of them (for both human and npc).
+
+Later, after the first round (in which all characters got organized) you reach the menu where you are able to:
+
+-Start the next round.
+-Kill a character so it doesnt appear on the next round.
+-Revive a character so it appears again in the nex round.
+-Change the initiative-modifier for any of the players.
+-End the current game.
+
+
+
